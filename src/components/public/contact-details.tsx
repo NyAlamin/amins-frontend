@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Phone, Mail, MapPin, User } from "lucide-react";
 import { getSiteContent } from "@/lib/content";
 import Reveal from "./reveal";
 
@@ -9,11 +9,19 @@ export default function ContactDetails() {
   const [content, setContent] = useState<Record<string, any>>({});
   useEffect(() => { getSiteContent().then(setContent); }, []);
 
-  const phone = content.contact_phone || "+880 1X XXX XXXXX";
-  const email = content.contact_email || "hello@aminsbd.com";
-  const address = content.contact_address || "Dhaka, Bangladesh";
-  const hours = content.contact_hours || "Sun-Thu: 10AM-6PM";
-  const mapEmbed = content.contact_map_embed || "";
+  const ceoName = content.contact_ceo_name || "Rahad Amin";
+  const ceoTitle = content.contact_ceo_title || "Founder & CEO";
+  const ceoPhones: string[] = Array.isArray(content.contact_ceo_phones) ? content.contact_ceo_phones : [];
+  const ceoEmail = content.contact_ceo_email || "";
+
+  const companyBdPhone = content.contact_company_bd_phone || "";
+  const companyCnPhone = content.contact_company_cn_phone || "";
+  const companyEmail = content.contact_company_email || "";
+  const bdOffice = content.contact_company_bd_office || "";
+  const cnOffice = content.contact_company_cn_office || "";
+  const ksaOffice = content.contact_company_ksa_office || "";
+
+  const cardImage = content.contact_card_image || "/contact-card.jpg";
 
   return (
     <section id="contact" className="bg-white py-12 sm:py-20 scroll-mt-20">
@@ -25,53 +33,70 @@ export default function ContactDetails() {
         </Reveal>
 
         <div className="grid md:grid-cols-2 gap-8 items-start">
-          {/* Left — details */}
-          <Reveal className="space-y-4">
-            <div className="card p-5 flex items-start gap-4">
-              <div className="w-11 h-11 rounded-xl bg-brand-soft text-brand grid place-items-center shrink-0"><Phone size={20} /></div>
-              <div>
-                <div className="text-sm font-bold text-brand-ink">Phone</div>
-                <div className="text-gray-label text-sm mt-0.5">{phone}</div>
-              </div>
-            </div>
-            <div className="card p-5 flex items-start gap-4">
-              <div className="w-11 h-11 rounded-xl bg-brand-soft text-brand grid place-items-center shrink-0"><Mail size={20} /></div>
-              <div>
-                <div className="text-sm font-bold text-brand-ink">Email</div>
-                <div className="text-gray-label text-sm mt-0.5">{email}</div>
-              </div>
-            </div>
-            <div className="card p-5 flex items-start gap-4">
-              <div className="w-11 h-11 rounded-xl bg-brand-soft text-brand grid place-items-center shrink-0"><MapPin size={20} /></div>
-              <div>
-                <div className="text-sm font-bold text-brand-ink">Address</div>
-                <div className="text-gray-label text-sm mt-0.5">{address}</div>
-              </div>
-            </div>
-            <div className="card p-5 flex items-start gap-4">
-              <div className="w-11 h-11 rounded-xl bg-brand-soft text-brand grid place-items-center shrink-0"><Clock size={20} /></div>
-              <div>
-                <div className="text-sm font-bold text-brand-ink">Office Hours</div>
-                <div className="text-gray-label text-sm mt-0.5">{hours}</div>
-              </div>
-            </div>
+          {/* Left — branded card with QR codes */}
+          <Reveal className="card overflow-hidden p-4 flex items-center justify-center h-full">
+            <img src={cardImage} alt="Amin's contact card — scan to connect on WhatsApp or WeChat" className="w-full h-auto rounded-lg" />
           </Reveal>
 
-          {/* Right — map */}
-          <Reveal delay={120} className="card overflow-hidden min-h-[320px] h-full">
-            {mapEmbed ? (
-              <iframe
-                src={mapEmbed}
-                className="w-full h-full min-h-[320px] border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Office location map"
-              />
-            ) : (
-              <div className="w-full h-full min-h-[320px] flex items-center justify-center bg-brand-mist text-gray-label text-sm text-center p-6">
-                Map location coming soon.
+          {/* Right — CEO & company info */}
+          <Reveal delay={120} className="space-y-4">
+            <div className="card p-5">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-11 h-11 rounded-xl bg-brand-soft text-brand grid place-items-center shrink-0"><User size={20} /></div>
+                <div>
+                  <div className="text-sm font-bold text-brand-ink">{ceoName}</div>
+                  <div className="text-gray-label text-sm mt-0.5">{ceoTitle}</div>
+                </div>
               </div>
-            )}
+              <div className="space-y-1.5 pl-[60px]">
+                {ceoPhones.map((p) => (
+                  <div key={p} className="text-gray-label text-sm">{p}</div>
+                ))}
+                {ceoEmail && <div className="text-gray-label text-sm">{ceoEmail}</div>}
+              </div>
+            </div>
+
+            <div className="card p-5">
+              <div className="text-sm font-bold text-brand-ink mb-4">Company Info</div>
+              <div className="space-y-3 text-sm">
+                {companyBdPhone && (
+                  <div className="flex items-start gap-3">
+                    <Phone size={16} className="text-brand shrink-0 mt-0.5" />
+                    <div><span className="font-semibold text-brand-ink">BD Phone:</span> <span className="text-gray-label">{companyBdPhone}</span></div>
+                  </div>
+                )}
+                {companyCnPhone && (
+                  <div className="flex items-start gap-3">
+                    <Phone size={16} className="text-brand shrink-0 mt-0.5" />
+                    <div><span className="font-semibold text-brand-ink">CN Phone:</span> <span className="text-gray-label">{companyCnPhone}</span></div>
+                  </div>
+                )}
+                {companyEmail && (
+                  <div className="flex items-start gap-3">
+                    <Mail size={16} className="text-brand shrink-0 mt-0.5" />
+                    <div><span className="font-semibold text-brand-ink">E-mail:</span> <span className="text-gray-label">{companyEmail}</span></div>
+                  </div>
+                )}
+                {bdOffice && (
+                  <div className="flex items-start gap-3">
+                    <MapPin size={16} className="text-brand shrink-0 mt-0.5" />
+                    <div><span className="font-semibold text-brand-ink">BD Office:</span> <span className="text-gray-label">{bdOffice}</span></div>
+                  </div>
+                )}
+                {cnOffice && (
+                  <div className="flex items-start gap-3">
+                    <MapPin size={16} className="text-brand shrink-0 mt-0.5" />
+                    <div><span className="font-semibold text-brand-ink">CN Office:</span> <span className="text-gray-label">{cnOffice}</span></div>
+                  </div>
+                )}
+                {ksaOffice && (
+                  <div className="flex items-start gap-3">
+                    <MapPin size={16} className="text-brand shrink-0 mt-0.5" />
+                    <div><span className="font-semibold text-brand-ink">KSA Office:</span> <span className="text-gray-label">{ksaOffice}</span></div>
+                  </div>
+                )}
+              </div>
+            </div>
           </Reveal>
         </div>
       </div>

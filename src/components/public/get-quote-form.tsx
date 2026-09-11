@@ -8,9 +8,8 @@ import Reveal from "./reveal";
 
 export default function GetQuoteForm() {
   const [content, setContent] = useState<Record<string, any>>({});
-  const [categories, setCategories] = useState<string[]>([]);
   const [form, setForm] = useState({
-    fullName: "", phone: "", email: "", productType: "", estimatedWeight: "", method: "AIR", message: "",
+    fullName: "", whatsApp: "", email: "", productLink: "", productName: "", quantity: "", estimatedPrice: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -18,7 +17,6 @@ export default function GetQuoteForm() {
 
   useEffect(() => {
     getSiteContent().then(setContent);
-    api.get("/shipping-rates/categories").then((res) => setCategories(res.data.categories || []));
   }, []);
 
   const title = content.quote_title || "Get a Free Quote";
@@ -28,8 +26,15 @@ export default function GetQuoteForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.fullName.trim() || !form.phone.trim()) {
-      setError("Full name and phone number are required.");
+    if (
+      !form.fullName.trim() ||
+      !form.whatsApp.trim() ||
+      !form.email.trim() ||
+      !form.productName.trim() ||
+      !form.quantity.trim() ||
+      !form.estimatedPrice.trim()
+    ) {
+      setError("Please fill in all required fields.");
       return;
     }
     setError("");
@@ -37,7 +42,7 @@ export default function GetQuoteForm() {
     try {
       await api.post("/quotes", form);
       setSubmitted(true);
-      setForm({ fullName: "", phone: "", email: "", productType: "", estimatedWeight: "", method: "AIR", message: "" });
+      setForm({ fullName: "", whatsApp: "", email: "", productLink: "", productName: "", quantity: "", estimatedPrice: "" });
     } catch {
       setError("Failed to submit your request. Please try again.");
     } finally {
@@ -66,52 +71,39 @@ export default function GetQuoteForm() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="field-label">Full Name *</label>
+                  <label className="field-label">Name *</label>
                   <input className="field-input" value={form.fullName} onChange={(e) => update("fullName", e.target.value)} placeholder="Your name" />
                 </div>
                 <div>
-                  <label className="field-label">Phone *</label>
-                  <input className="field-input" value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+880 1XXX XXXXXX" />
+                  <label className="field-label">WhatsApp *</label>
+                  <input className="field-input" value={form.whatsApp} onChange={(e) => update("whatsApp", e.target.value)} placeholder="+880 1XXX XXXXXX" />
                 </div>
               </div>
 
               <div>
-                <label className="field-label">Email (optional)</label>
+                <label className="field-label">E-mail *</label>
                 <input className="field-input" type="email" value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="you@example.com" />
+              </div>
+
+              <div>
+                <label className="field-label">Product Link</label>
+                <input className="field-input" value={form.productLink} onChange={(e) => update("productLink", e.target.value)} placeholder="Link to the product page" />
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="field-label">Product Type</label>
-                  <select className="field-input" value={form.productType} onChange={(e) => update("productType", e.target.value)}>
-                    <option value="">Select category</option>
-                    {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
+                  <label className="field-label">Product Name *</label>
+                  <input className="field-input" value={form.productName} onChange={(e) => update("productName", e.target.value)} placeholder="e.g. Wireless Earbuds" />
                 </div>
                 <div>
-                  <label className="field-label">Estimated Weight (kg)</label>
-                  <input className="field-input" value={form.estimatedWeight} onChange={(e) => update("estimatedWeight", e.target.value)} placeholder="e.g. 50" />
+                  <label className="field-label">Quantity *</label>
+                  <input className="field-input" value={form.quantity} onChange={(e) => update("quantity", e.target.value)} placeholder="e.g. 2" />
                 </div>
               </div>
 
               <div>
-                <label className="field-label">Shipping Method</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {["AIR", "SEA"].map((m) => (
-                    <button
-                      key={m} type="button"
-                      onClick={() => update("method", m)}
-                      className={`py-2.5 rounded-lg text-sm font-bold border-[1.5px] transition-colors cursor-pointer ${form.method === m ? "bg-brand border-brand text-white" : "bg-white border-gray-line text-gray-label"}`}
-                    >
-                      {m === "AIR" ? "Air Freight" : "Sea Freight"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="field-label">Message</label>
-                <textarea className="field-input min-h-[90px]" value={form.message} onChange={(e) => update("message", e.target.value)} placeholder="Tell us more about your shipment" />
+                <label className="field-label">Estimate Price (Till Hand) *</label>
+                <input className="field-input" value={form.estimatedPrice} onChange={(e) => update("estimatedPrice", e.target.value)} placeholder="Your expected total price" />
               </div>
 
               {error && <div className="p-3 rounded-lg bg-danger-soft text-danger text-sm">{error}</div>}

@@ -53,6 +53,7 @@ export default function SettingsPage() {
   const [galleryPhotos, setGalleryPhotos] = useState<any[]>([]);
   const [partners, setPartners] = useState<any[]>([]);
   const [heroImages, setHeroImages] = useState<string[]>([]);
+  const [ceoPhones, setCeoPhones] = useState<string[]>([]);
 
   useEffect(() => {
     api.get("/site-content/admin").then((res) => {
@@ -79,6 +80,7 @@ export default function SettingsPage() {
       parseJson("gallery_photos", setGalleryPhotos);
       parseJson("partners", setPartners);
       parseJson("hero_images", setHeroImages);
+      parseJson("contact_ceo_phones", setCeoPhones);
     });
   }, []);
 
@@ -102,6 +104,7 @@ export default function SettingsPage() {
         gallery_photos: galleryPhotos,
         partners,
         hero_images: heroImages,
+        contact_ceo_phones: ceoPhones,
       };
 
       const allItems = items.map((i) => {
@@ -203,6 +206,15 @@ export default function SettingsPage() {
     const updated = [...galleryPhotos];
     updated[i] = { ...updated[i], [field]: value };
     setGalleryPhotos(updated);
+  };
+
+  // ═══ CEO PHONE HELPERS ═══
+  const addCeoPhone = () => setCeoPhones([...ceoPhones, ""]);
+  const removeCeoPhone = (i: number) => setCeoPhones(ceoPhones.filter((_, idx) => idx !== i));
+  const updateCeoPhone = (i: number, value: string) => {
+    const updated = [...ceoPhones];
+    updated[i] = value;
+    setCeoPhones(updated);
   };
 
   // ═══ PARTNER HELPERS ═══
@@ -989,36 +1001,79 @@ export default function SettingsPage() {
       {/* ═══ CONTACT SECTION ═══ */}
       {activeGroup === "contact" && (
         <div className="card p-6 space-y-5">
-          <h2 className="text-lg font-display text-brand-ink">Contact Information</h2>
+          <h2 className="text-lg font-display text-brand-ink">Contact Card Image</h2>
           <div>
-            <label className="field-label">Phone Number</label>
-            <input className="field-input" value={getVal("contact_phone")} onChange={(e) => updateItem("contact_phone", e.target.value)} />
-          </div>
-          <div>
-            <label className="field-label">Email Address</label>
-            <input className="field-input" value={getVal("contact_email")} onChange={(e) => updateItem("contact_email", e.target.value)} />
-          </div>
-          <div>
-            <label className="field-label">Office Address</label>
-            <input className="field-input" value={getVal("contact_address")} onChange={(e) => updateItem("contact_address", e.target.value)} />
-          </div>
-          <div>
-            <label className="field-label">Office Hours</label>
-            <input className="field-input" placeholder="Sun-Thu: 10AM-6PM" value={getVal("contact_hours")} onChange={(e) => updateItem("contact_hours", e.target.value)} />
-          </div>
-          <div>
-            <label className="field-label">Google Maps Embed URL</label>
-            <input className="field-input" placeholder="https://www.google.com/maps/embed?pb=..." value={getVal("contact_map_embed")} onChange={(e) => updateItem("contact_map_embed", e.target.value)} />
-            <p className="text-[11px] text-gray-label mt-1">In Google Maps: Share {"→"} Embed a map {"→"} copy the src URL from the iframe code.</p>
-          </div>
-          {/* Preview */}
-          <div>
-            <label className="field-label">Preview</label>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="border border-gray-line rounded-xl p-4 bg-white"><div className="text-sm font-bold text-brand-ink mb-1">Phone</div><div className="text-[12px] text-gray-label">{getVal("contact_phone")}</div></div>
-              <div className="border border-gray-line rounded-xl p-4 bg-white"><div className="text-sm font-bold text-brand-ink mb-1">Email</div><div className="text-[12px] text-gray-label">{getVal("contact_email")}</div></div>
-              <div className="border border-gray-line rounded-xl p-4 bg-white"><div className="text-sm font-bold text-brand-ink mb-1">Address</div><div className="text-[12px] text-gray-label">{getVal("contact_address")}</div></div>
+            <label className="field-label">Logo + QR Codes Image</label>
+            <div className="flex gap-3 items-start">
+              <input className="field-input flex-1" placeholder="Image URL" value={getVal("contact_card_image")} onChange={(e) => updateItem("contact_card_image", e.target.value)} />
+              <label className="btn-blue cursor-pointer shrink-0">
+                <input type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) handleUpload("contact_card_image", e.target.files[0]); }} />
+                Upload
+              </label>
             </div>
+            {getVal("contact_card_image") && (
+              <div className="mt-3 rounded-lg overflow-hidden border border-gray-line max-w-[260px]">
+                <img src={getVal("contact_card_image")} alt="Contact card preview" className="w-full h-auto" />
+              </div>
+            )}
+          </div>
+
+          <h2 className="text-lg font-display text-brand-ink pt-2">CEO Info</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className="field-label">CEO Name</label>
+              <input className="field-input" value={getVal("contact_ceo_name")} onChange={(e) => updateItem("contact_ceo_name", e.target.value)} />
+            </div>
+            <div>
+              <label className="field-label">CEO Title</label>
+              <input className="field-input" value={getVal("contact_ceo_title")} onChange={(e) => updateItem("contact_ceo_title", e.target.value)} />
+            </div>
+          </div>
+          <div>
+            <label className="field-label">CEO Email</label>
+            <input className="field-input" value={getVal("contact_ceo_email")} onChange={(e) => updateItem("contact_ceo_email", e.target.value)} />
+          </div>
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="field-label mb-0">CEO Phone Numbers</label>
+              <button onClick={addCeoPhone} className="btn-ghost py-1.5 px-3 text-[12px]"><Plus size={14} /> Add Phone</button>
+            </div>
+            <div className="space-y-2">
+              {ceoPhones.map((p, i) => (
+                <div key={i} className="flex gap-2 items-center">
+                  <input className="field-input flex-1" value={p} onChange={(e) => updateCeoPhone(i, e.target.value)} placeholder="+8801XXXXXXXXX" />
+                  <button onClick={() => removeCeoPhone(i)} className="text-danger hover:text-danger/70 cursor-pointer shrink-0"><Trash2 size={16} /></button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <h2 className="text-lg font-display text-brand-ink pt-2">Company Info</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className="field-label">BD Phone</label>
+              <input className="field-input" value={getVal("contact_company_bd_phone")} onChange={(e) => updateItem("contact_company_bd_phone", e.target.value)} />
+            </div>
+            <div>
+              <label className="field-label">CN Phone</label>
+              <input className="field-input" value={getVal("contact_company_cn_phone")} onChange={(e) => updateItem("contact_company_cn_phone", e.target.value)} />
+            </div>
+          </div>
+          <div>
+            <label className="field-label">Company E-mail</label>
+            <input className="field-input" value={getVal("contact_company_email")} onChange={(e) => updateItem("contact_company_email", e.target.value)} />
+          </div>
+          <div>
+            <label className="field-label">BD Office</label>
+            <input className="field-input" value={getVal("contact_company_bd_office")} onChange={(e) => updateItem("contact_company_bd_office", e.target.value)} />
+          </div>
+          <div>
+            <label className="field-label">CN Office</label>
+            <input className="field-input" value={getVal("contact_company_cn_office")} onChange={(e) => updateItem("contact_company_cn_office", e.target.value)} />
+          </div>
+          <div>
+            <label className="field-label">KSA Office</label>
+            <input className="field-input" value={getVal("contact_company_ksa_office")} onChange={(e) => updateItem("contact_company_ksa_office", e.target.value)} />
           </div>
         </div>
       )}

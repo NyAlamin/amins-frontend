@@ -8,12 +8,12 @@ import { Trash2, X } from "lucide-react";
 interface Quote {
   id: string;
   fullName: string;
-  phone: string;
-  email?: string;
-  productType?: string;
-  estimatedWeight?: string;
-  method?: string;
-  message?: string;
+  whatsApp: string;
+  email: string;
+  productLink?: string;
+  productName: string;
+  quantity: string;
+  estimatedPrice: string;
   status: string;
   adminNotes?: string;
   createdAt: string;
@@ -93,9 +93,10 @@ export default function QuotesPage() {
             <thead>
               <tr className="bg-brand-mist text-[11px] uppercase tracking-wider text-gray-label font-bold">
                 <th className="text-left px-4 py-3">Name</th>
-                <th className="text-left px-4 py-3">Phone</th>
+                <th className="text-left px-4 py-3">WhatsApp</th>
                 <th className="text-left px-4 py-3">Product</th>
-                <th className="text-left px-4 py-3">Method</th>
+                <th className="text-left px-4 py-3">Qty</th>
+                <th className="text-left px-4 py-3">Est. Price (Till Hand)</th>
                 <th className="text-left px-4 py-3">Status</th>
                 <th className="text-left px-4 py-3">Submitted</th>
                 <th className="text-left px-4 py-3"></th>
@@ -103,7 +104,7 @@ export default function QuotesPage() {
             </thead>
             <tbody>
               {quotes.length === 0 && (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-label text-sm">No quote requests found</td></tr>
+                <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-label text-sm">No quote requests found</td></tr>
               )}
               {quotes.map((q) => (
                 <tr key={q.id} className="border-b border-gray-line last:border-0 hover:bg-brand-mist transition-colors cursor-pointer"
@@ -112,13 +113,10 @@ export default function QuotesPage() {
                     <div className="font-semibold text-sm text-brand-ink">{q.fullName}</div>
                     {q.email && <div className="text-[12px] text-gray-label">{q.email}</div>}
                   </td>
-                  <td className="px-4 py-3.5 text-sm">{q.phone}</td>
-                  <td className="px-4 py-3.5 text-sm">{q.productType || "—"}</td>
-                  <td className="px-4 py-3.5">
-                    {q.method && (
-                      <span className={`badge ${q.method === "AIR" ? "bg-brand-soft text-brand" : "bg-gray-100 text-gray-label"}`}>{q.method}</span>
-                    )}
-                  </td>
+                  <td className="px-4 py-3.5 text-sm">{q.whatsApp}</td>
+                  <td className="px-4 py-3.5 text-sm">{q.productName || "—"}</td>
+                  <td className="px-4 py-3.5 text-sm">{q.quantity || "—"}</td>
+                  <td className="px-4 py-3.5 text-sm">{q.estimatedPrice || "—"}</td>
                   <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
                     <select
                       value={q.status}
@@ -152,12 +150,19 @@ export default function QuotesPage() {
 
             <div className="space-y-4 text-sm">
               <div><span className="text-gray-label">Name</span><div className="font-semibold text-brand-ink">{active.fullName}</div></div>
-              <div><span className="text-gray-label">Phone</span><div className="font-semibold text-brand-ink">{active.phone}</div></div>
-              {active.email && <div><span className="text-gray-label">Email</span><div className="font-semibold text-brand-ink">{active.email}</div></div>}
-              {active.productType && <div><span className="text-gray-label">Product Type</span><div className="font-semibold text-brand-ink">{active.productType}</div></div>}
-              {active.estimatedWeight && <div><span className="text-gray-label">Estimated Weight</span><div className="font-semibold text-brand-ink">{active.estimatedWeight} kg</div></div>}
-              {active.method && <div><span className="text-gray-label">Method</span><div className="font-semibold text-brand-ink">{active.method}</div></div>}
-              {active.message && <div><span className="text-gray-label">Message</span><div className="text-brand-ink mt-1 whitespace-pre-line">{active.message}</div></div>}
+              <div><span className="text-gray-label">WhatsApp</span><div className="font-semibold text-brand-ink">{active.whatsApp}</div></div>
+              <div><span className="text-gray-label">Email</span><div className="font-semibold text-brand-ink">{active.email}</div></div>
+              {active.productLink && (
+                <div>
+                  <span className="text-gray-label">Product Link</span>
+                  <div className="font-semibold text-brand break-all">
+                    <a href={active.productLink} target="_blank" rel="noopener noreferrer" className="text-brand underline">{active.productLink}</a>
+                  </div>
+                </div>
+              )}
+              <div><span className="text-gray-label">Product Name</span><div className="font-semibold text-brand-ink">{active.productName}</div></div>
+              <div><span className="text-gray-label">Quantity</span><div className="font-semibold text-brand-ink">{active.quantity}</div></div>
+              <div><span className="text-gray-label">Estimate Price (Till Hand)</span><div className="font-semibold text-brand-ink">{active.estimatedPrice}</div></div>
 
               <div>
                 <span className="text-gray-label">Status</span>
