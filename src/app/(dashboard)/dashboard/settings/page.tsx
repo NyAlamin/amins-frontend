@@ -1001,24 +1001,23 @@ export default function SettingsPage() {
       {/* ═══ CONTACT SECTION ═══ */}
       {activeGroup === "contact" && (
         <div className="card p-6 space-y-5">
-          <h2 className="text-lg font-display text-brand-ink">Contact Card Image</h2>
+          <h2 className="text-lg font-display text-brand-ink">CEO Info</h2>
           <div>
-            <label className="field-label">Logo + QR Codes Image</label>
+            <label className="field-label">CEO Photo</label>
             <div className="flex gap-3 items-start">
-              <input className="field-input flex-1" placeholder="Image URL" value={getVal("contact_card_image")} onChange={(e) => updateItem("contact_card_image", e.target.value)} />
+              <input className="field-input flex-1" placeholder="Image URL" value={getVal("contact_ceo_photo")} onChange={(e) => updateItem("contact_ceo_photo", e.target.value)} />
               <label className="btn-blue cursor-pointer shrink-0">
-                <input type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) handleUpload("contact_card_image", e.target.files[0]); }} />
+                <input type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) handleUpload("contact_ceo_photo", e.target.files[0]); }} />
                 Upload
               </label>
             </div>
-            {getVal("contact_card_image") && (
-              <div className="mt-3 rounded-lg overflow-hidden border border-gray-line max-w-[260px]">
-                <img src={getVal("contact_card_image")} alt="Contact card preview" className="w-full h-auto" />
+            {getVal("contact_ceo_photo") && (
+              <div className="mt-3 w-24 h-24 rounded-full overflow-hidden border-2 border-brand">
+                <img src={getVal("contact_ceo_photo")} alt="CEO preview" className="w-full h-full object-cover" />
               </div>
             )}
+            <p className="text-[11px] text-gray-label mt-1">Leave empty to show the CEO&apos;s initials instead.</p>
           </div>
-
-          <h2 className="text-lg font-display text-brand-ink pt-2">CEO Info</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="field-label">CEO Name</label>

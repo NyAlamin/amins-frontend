@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Phone, Mail, MapPin, User } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
 import { getSiteContent } from "@/lib/content";
 import Reveal from "./reveal";
 
@@ -13,6 +13,14 @@ export default function ContactDetails() {
   const ceoTitle = content.contact_ceo_title || "Founder & CEO";
   const ceoPhones: string[] = Array.isArray(content.contact_ceo_phones) ? content.contact_ceo_phones : [];
   const ceoEmail = content.contact_ceo_email || "";
+  const ceoPhoto = content.contact_ceo_photo || "";
+  const ceoInitials = ceoName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w: string) => w[0])
+    .join("")
+    .toUpperCase();
 
   const companyBdPhone = content.contact_company_bd_phone || "";
   const companyCnPhone = content.contact_company_cn_phone || "";
@@ -20,8 +28,6 @@ export default function ContactDetails() {
   const bdOffice = content.contact_company_bd_office || "";
   const cnOffice = content.contact_company_cn_office || "";
   const ksaOffice = content.contact_company_ksa_office || "";
-
-  const cardImage = content.contact_card_image || "/contact-card.jpg";
 
   return (
     <section id="contact" className="bg-white py-12 sm:py-20 scroll-mt-20">
@@ -32,73 +38,76 @@ export default function ContactDetails() {
           <div className="w-16 h-1 bg-brand mx-auto" />
         </Reveal>
 
-        <div className="grid md:grid-cols-2 gap-8 items-start">
-          {/* Left — branded card with QR codes */}
-          <Reveal className="card overflow-hidden p-4 flex items-center justify-center h-full">
-            <img src={cardImage} alt="Amin's contact card — scan to connect on WhatsApp or WeChat" className="w-full h-auto rounded-lg" />
-          </Reveal>
+        {/* CEO Profile */}
+        <Reveal className="card rounded-2xl p-8 sm:p-10 mb-6 text-center">
+          {ceoPhoto ? (
+            <img
+              src={ceoPhoto}
+              alt={ceoName}
+              className="w-40 h-40 rounded-full border-4 border-brand object-cover mx-auto"
+            />
+          ) : (
+            <div className="w-40 h-40 rounded-full border-4 border-brand bg-brand text-white text-4xl font-bold grid place-items-center mx-auto">
+              {ceoInitials || "?"}
+            </div>
+          )}
 
-          {/* Right — CEO & company info */}
-          <Reveal delay={120} className="space-y-4">
-            <div className="card p-5">
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-11 h-11 rounded-xl bg-brand-soft text-brand grid place-items-center shrink-0"><User size={20} /></div>
-                <div>
-                  <div className="text-sm font-bold text-brand-ink">{ceoName}</div>
-                  <div className="text-gray-label text-sm mt-0.5">{ceoTitle}</div>
+          <div className="text-brand-ink font-bold text-xl mt-5">{ceoName}</div>
+          <div className="text-gray-label text-sm mt-1">{ceoTitle}</div>
+
+          <div className="mt-4 space-y-1">
+            {ceoPhones.map((p) => (
+              <div key={p} className="text-gray-label text-sm">{p}</div>
+            ))}
+            {ceoEmail && <div className="text-gray-label text-sm">{ceoEmail}</div>}
+          </div>
+        </Reveal>
+
+        {/* Company Info */}
+        <Reveal delay={120} className="card rounded-2xl p-8 sm:p-10">
+          <div className="grid sm:grid-cols-2 gap-6 text-sm">
+            <div className="space-y-4">
+              {companyBdPhone && (
+                <div className="flex items-start gap-3">
+                  <Phone size={16} className="text-brand shrink-0 mt-0.5" />
+                  <div><span className="font-semibold text-brand-ink">BD Phone:</span> <span className="text-gray-label">{companyBdPhone}</span></div>
                 </div>
-              </div>
-              <div className="space-y-1.5 pl-[60px]">
-                {ceoPhones.map((p) => (
-                  <div key={p} className="text-gray-label text-sm">{p}</div>
-                ))}
-                {ceoEmail && <div className="text-gray-label text-sm">{ceoEmail}</div>}
-              </div>
+              )}
+              {companyCnPhone && (
+                <div className="flex items-start gap-3">
+                  <Phone size={16} className="text-brand shrink-0 mt-0.5" />
+                  <div><span className="font-semibold text-brand-ink">CN Phone:</span> <span className="text-gray-label">{companyCnPhone}</span></div>
+                </div>
+              )}
+              {companyEmail && (
+                <div className="flex items-start gap-3">
+                  <Mail size={16} className="text-brand shrink-0 mt-0.5" />
+                  <div><span className="font-semibold text-brand-ink">E-mail:</span> <span className="text-gray-label">{companyEmail}</span></div>
+                </div>
+              )}
             </div>
-
-            <div className="card p-5">
-              <div className="text-sm font-bold text-brand-ink mb-4">Company Info</div>
-              <div className="space-y-3 text-sm">
-                {companyBdPhone && (
-                  <div className="flex items-start gap-3">
-                    <Phone size={16} className="text-brand shrink-0 mt-0.5" />
-                    <div><span className="font-semibold text-brand-ink">BD Phone:</span> <span className="text-gray-label">{companyBdPhone}</span></div>
-                  </div>
-                )}
-                {companyCnPhone && (
-                  <div className="flex items-start gap-3">
-                    <Phone size={16} className="text-brand shrink-0 mt-0.5" />
-                    <div><span className="font-semibold text-brand-ink">CN Phone:</span> <span className="text-gray-label">{companyCnPhone}</span></div>
-                  </div>
-                )}
-                {companyEmail && (
-                  <div className="flex items-start gap-3">
-                    <Mail size={16} className="text-brand shrink-0 mt-0.5" />
-                    <div><span className="font-semibold text-brand-ink">E-mail:</span> <span className="text-gray-label">{companyEmail}</span></div>
-                  </div>
-                )}
-                {bdOffice && (
-                  <div className="flex items-start gap-3">
-                    <MapPin size={16} className="text-brand shrink-0 mt-0.5" />
-                    <div><span className="font-semibold text-brand-ink">BD Office:</span> <span className="text-gray-label">{bdOffice}</span></div>
-                  </div>
-                )}
-                {cnOffice && (
-                  <div className="flex items-start gap-3">
-                    <MapPin size={16} className="text-brand shrink-0 mt-0.5" />
-                    <div><span className="font-semibold text-brand-ink">CN Office:</span> <span className="text-gray-label">{cnOffice}</span></div>
-                  </div>
-                )}
-                {ksaOffice && (
-                  <div className="flex items-start gap-3">
-                    <MapPin size={16} className="text-brand shrink-0 mt-0.5" />
-                    <div><span className="font-semibold text-brand-ink">KSA Office:</span> <span className="text-gray-label">{ksaOffice}</span></div>
-                  </div>
-                )}
-              </div>
+            <div className="space-y-4">
+              {bdOffice && (
+                <div className="flex items-start gap-3">
+                  <MapPin size={16} className="text-brand shrink-0 mt-0.5" />
+                  <div><span className="font-semibold text-brand-ink">BD Office:</span> <span className="text-gray-label">{bdOffice}</span></div>
+                </div>
+              )}
+              {cnOffice && (
+                <div className="flex items-start gap-3">
+                  <MapPin size={16} className="text-brand shrink-0 mt-0.5" />
+                  <div><span className="font-semibold text-brand-ink">CN Office:</span> <span className="text-gray-label">{cnOffice}</span></div>
+                </div>
+              )}
+              {ksaOffice && (
+                <div className="flex items-start gap-3">
+                  <MapPin size={16} className="text-brand shrink-0 mt-0.5" />
+                  <div><span className="font-semibold text-brand-ink">KSA Office:</span> <span className="text-gray-label">{ksaOffice}</span></div>
+                </div>
+              )}
             </div>
-          </Reveal>
-        </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
