@@ -59,7 +59,7 @@ export default function AboutVideos() {
   const [featured, ...smallVideos] = videos;
 
   return (
-    <section className="bg-white py-12 sm:py-20">
+    <section id="about" className="bg-white py-12 sm:py-20 scroll-mt-20">
       <div className="max-w-[1180px] mx-auto px-6">
         <Reveal className="text-center mb-10">
           <span className="text-kicker text-brand">About Us</span>
