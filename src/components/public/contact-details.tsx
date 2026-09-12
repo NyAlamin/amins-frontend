@@ -38,35 +38,46 @@ export default function ContactDetails() {
           <div className="w-16 h-1 bg-brand mx-auto" />
         </Reveal>
 
-        {/* CEO Profile */}
-        <Reveal className="card rounded-2xl p-8 sm:p-10 mb-6 text-center">
-          {ceoPhoto ? (
-            <img
-              src={ceoPhoto}
-              alt={ceoName}
-              className="w-40 h-40 rounded-full border-4 border-brand object-cover mx-auto"
-            />
-          ) : (
-            <div className="w-40 h-40 rounded-full border-4 border-brand bg-brand text-white text-4xl font-bold grid place-items-center mx-auto">
-              {ceoInitials || "?"}
+        <div className="grid md:grid-cols-2 gap-8 items-stretch">
+          {/* Left — CEO card */}
+          <Reveal className="bg-brand text-white rounded-2xl p-8 text-center h-full">
+            {ceoPhoto ? (
+              <img
+                src={ceoPhoto}
+                alt={ceoName}
+                className="w-[140px] h-[140px] rounded-full border-4 border-white object-cover mx-auto"
+              />
+            ) : (
+              <div className="w-[140px] h-[140px] rounded-full border-4 border-white bg-white text-brand text-4xl font-bold grid place-items-center mx-auto">
+                {ceoInitials || "?"}
+              </div>
+            )}
+
+            <div className="text-white font-bold text-xl mt-5 text-center">{ceoName}</div>
+            <div className="text-white/80 text-sm mt-1 text-center">{ceoTitle}</div>
+
+            <div className="border-t border-white/20 my-5" />
+
+            <div className="space-y-2">
+              {ceoPhones.map((p) => (
+                <div key={p} className="flex items-center justify-center gap-2 text-sm">
+                  <Phone size={14} className="text-white/80 shrink-0" />
+                  <span>{p}</span>
+                </div>
+              ))}
+              {ceoEmail && (
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <Mail size={14} className="text-white/80 shrink-0" />
+                  <span>{ceoEmail}</span>
+                </div>
+              )}
             </div>
-          )}
+          </Reveal>
 
-          <div className="text-brand-ink font-bold text-xl mt-5">{ceoName}</div>
-          <div className="text-gray-label text-sm mt-1">{ceoTitle}</div>
-
-          <div className="mt-4 space-y-1">
-            {ceoPhones.map((p) => (
-              <div key={p} className="text-gray-label text-sm">{p}</div>
-            ))}
-            {ceoEmail && <div className="text-gray-label text-sm">{ceoEmail}</div>}
-          </div>
-        </Reveal>
-
-        {/* Company Info */}
-        <Reveal delay={120} className="card rounded-2xl p-8 sm:p-10">
-          <div className="grid sm:grid-cols-2 gap-6 text-sm">
-            <div className="space-y-4">
+          {/* Right — Company info */}
+          <Reveal delay={120} className="bg-white border border-gray-line rounded-2xl p-8 h-full flex flex-col justify-center">
+            <div className="font-bold text-brand-ink text-lg mb-5">Company Info</div>
+            <div className="space-y-4 text-sm">
               {companyBdPhone && (
                 <div className="flex items-start gap-3">
                   <Phone size={16} className="text-brand shrink-0 mt-0.5" />
@@ -85,8 +96,6 @@ export default function ContactDetails() {
                   <div><span className="font-semibold text-brand-ink">E-mail:</span> <span className="text-gray-label">{companyEmail}</span></div>
                 </div>
               )}
-            </div>
-            <div className="space-y-4">
               {bdOffice && (
                 <div className="flex items-start gap-3">
                   <MapPin size={16} className="text-brand shrink-0 mt-0.5" />
@@ -106,8 +115,8 @@ export default function ContactDetails() {
                 </div>
               )}
             </div>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

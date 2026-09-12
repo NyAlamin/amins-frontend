@@ -51,7 +51,7 @@ export default function GetQuoteForm() {
   };
 
   return (
-    <section className="bg-brand py-12 sm:py-20">
+    <section id="quote" className="bg-brand py-12 sm:py-20 scroll-mt-20">
       <Reveal className="max-w-[640px] mx-auto px-6">
         <div className="text-center mb-8">
           <h2 className="text-section-title text-white mb-3">{title}</h2>

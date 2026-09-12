@@ -12,6 +12,7 @@ const links = [
   { href: "/#services", label: "Services" },
   { href: "/packing-instructions", label: "Packing Guide" },
   { href: "/terms", label: "Terms & Conditions" },
+  { href: "/#quote", label: "Free Quote" },
   { href: "/#contact", label: "Contact" },
 ];
 

@@ -8,7 +8,10 @@ import Loading from "@/components/ui/loading";
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
 
-  if (loading) return <Loading />;
+  // While the auth check is in flight, or once it's resolved with no user
+  // (the auth context will redirect to /login), show a spinner instead of
+  // flashing the dashboard shell before the redirect kicks in.
+  if (loading || !user) return <Loading />;
 
   const isCustomer = user?.role?.name === "CUSTOMER";
 
